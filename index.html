@@ -3,71 +3,127 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard</title>
+<title>Admin Review Dashboard</title>
 <style>
-body { font-family: Arial, sans-serif; background: #111; color: #fff; padding: 20px; }
-h2 { color: #bc13fe; }
-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-th, td { border: 1px solid #444; padding: 10px; text-align: left; }
-th { background: #222; }
-td { background: #1a1a1a; }
-input, button { padding: 5px; border-radius: 5px; border: 1px solid #bc13fe; background: #222; color: #fff; }
-button { cursor: pointer; background: #bc13fe; border: none; }
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #faf9f7;
+  color: #262420;
+  margin: 0;
+  padding: 0;
+}
+h1 {
+  text-align: center;
+  padding: 20px 0;
+  font-family: 'Playfair Display', serif;
+  color: #0d5f5f;
+}
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.message-card {
+  background-color: #fff;
+  border: 1px solid #e8e6e2;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.name-tag {
+  font-weight: 600;
+  color: #0d5f5f;
+  background: rgba(13,95,95,0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+}
+.message-body {
+  font-size: 0.875rem;
+  margin-bottom: 12px;
+}
+.reply-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #e8e6e2;
+  margin-bottom: 8px;
+}
+.reply-btn {
+  background-color: #0d5f5f;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.reply-btn:hover {
+  background-color: #094545;
+}
 </style>
 </head>
 <body>
-<h2>Admin Dashboard</h2>
-<table id="msgTable">
-<tr>
-  <th>Alias</th>
-  <th>Message</th>
-  <th>Reply</th>
-  <th>Action</th>
-</tr>
-</table>
+<h1>Admin Review Dashboard</h1>
+<div class="container" id="messagesContainer">
+  <p>Loading messages...</p>
+</div>
 
 <script>
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyvD5r3LE94iIFVUI8A9l_IaH-oLL7DXxirpKlQ1Ba4jIb0Lz6rdV649Cevzl4wd2UR/exec";
 
 async function fetchMessages() {
-  const res = await fetch(WEB_APP_URL);
-  const messages = await res.json();
-  const table = document.getElementById('msgTable');
-
-  // Clear old rows
-  table.innerHTML = `<tr>
-    <th>Alias</th>
-    <th>Message</th>
-    <th>Reply</th>
-    <th>Action</th>
-  </tr>`;
-
-  messages.forEach(msg => {
-    const row = table.insertRow();
-    row.insertCell(0).textContent = msg.alias || msg.Alias || "Anonymous";
-    row.insertCell(1).textContent = msg.message || msg.Message || "";
-    
-    const replyCell = row.insertCell(2);
-    const replyInput = document.createElement("input");
-    replyInput.value = msg.Reply || "";
-    replyCell.appendChild(replyInput);
-
-    const actionCell = row.insertCell(3);
-    const btn = document.createElement("button");
-    btn.textContent = "Save Reply";
-    btn.onclick = async () => {
-      await fetch(WEB_APP_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ messageId: msg.MessageID || msg.messageId, reply: replyInput.value })
-      });
-      alert("Reply saved");
-    };
-    actionCell.appendChild(btn);
-  });
+  try {
+    const res = await fetch(WEB_APP_URL);
+    const data = await res.json();
+    renderMessages(data);
+  } catch (err) {
+    document.getElementById('messagesContainer').innerHTML = `<p style="color:red;">Failed to load messages: ${err}</p>`;
+  }
 }
 
-// Refresh every 10 seconds
+function renderMessages(messages) {
+  const container = document.getElementById('messagesContainer');
+  if (!messages.length) {
+    container.innerHTML = "<p>No messages yet.</p>";
+    return;
+  }
+
+  container.innerHTML = messages.map(msg => `
+    <div class="message-card">
+      <div class="message-header">
+        <span class="name-tag">${msg.alias || msg.Alias || 'Anonymous'}</span>
+      </div>
+      <div class="message-body">${msg.message || msg.Message || '(No message content)'}</div>
+      <input class="reply-input" placeholder="Write reply..." id="reply_${msg.MessageID || msg.messageId || msg.timestamp}">
+      <button class="reply-btn" onclick="sendReply('${msg.MessageID || msg.messageId || msg.timestamp}')">Send Reply</button>
+    </div>
+  `).join('');
+}
+
+async function sendReply(messageId) {
+  const input = document.getElementById(`reply_${messageId}`);
+  if (!input.value.trim()) { alert("Reply cannot be empty"); return; }
+
+  await fetch(WEB_APP_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      messageId: messageId,
+      reply: input.value
+    })
+  });
+  alert("Reply sent!");
+  input.value = "";
+}
+
+// Auto-refresh every 10 seconds
 fetchMessages();
 setInterval(fetchMessages, 10000);
 </script>
