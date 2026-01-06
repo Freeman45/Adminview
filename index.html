@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apex Admin Dashboard</title>
+<style>
+body { font-family: 'Courier New', monospace; background:#0a0a0a; color:#fff; margin:0; padding:0;}
+.container { max-width:1000px; margin:40px auto; background:#141418; padding:30px; border-radius:10px; border:2px solid #bc13fe;}
+h1 { color:#bc13fe; margin-bottom:20px; }
+input[type=text], textarea { width:100%; padding:10px; margin:5px 0 15px 0; border-radius:5px; border:1px solid #bc13fe; background:#1a1a1a; color:#fff;}
+button { padding:10px 15px; border-radius:5px; border:2px solid #bc13fe; background:transparent; color:#bc13fe; cursor:pointer; font-weight:bold; margin-right:5px;}
+button:hover { background:#bc13fe; color:#000;}
+.message-card { border:1px solid #bc13fe; border-radius:5px; padding:15px; margin-bottom:15px; background:#0f0f12;}
+.message-header { display:flex; justify-content:space-between; margin-bottom:10px;}
+.reply-box { margin-top:10px;}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Apex Admin Dashboard</h1>
+
+  <input type="text" id="searchInput" placeholder="Search by alias or message...">
+
+  <div id="messagesContainer"></div>
+</div>
+
+<script>
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyvD5r3LE94iIFVUI8A9l_IaH-oLL7DXxirpKlQ1Ba4jIb0Lz6rdV649Cevzl4wd2UR/exec';
+let allMessages = [];
+
+// Fetch all messages
+async function fetchMessages() {
+  const res = await fetch(WEB_APP_URL);
+  allMessages = await res.json();
+  displayMessages(allMessages);
+}
+
+// Display messages
+function displayMessages(messages) {
+  const container = document.getElementById('messagesContainer');
+  container.innerHTML = '';
+  messages.forEach(msg => {
+    const div = document.createElement('div');
+    div.className = 'message-card';
+    div.innerHTML = `
+      <div class="message-header">
+        <strong>${msg.alias || 'Anonymous'}</strong>
+        <span>${msg.Timestamp || ''}</span>
+      </div>
+      <div class="message-body">${msg.message || ''}</div>
+      <div class="reply-box">
+        <textarea placeholder="Type reply here...">${msg.Reply || ''}</textarea>
+        <button onclick="submitReply(this,'${msg.MessageID}')">Save Reply</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// Submit reply to sheet
+function submitReply(button, messageId) {
+  const textarea = button.previousElementSibling;
+  const reply = textarea.value.trim();
+  if(!reply) { alert('Reply cannot be empty'); return; }
+
+  // Use POST with messageId & reply
+  const params = new URLSearchParams({ messageId, reply });
+  fetch(WEB_APP_URL, { method:'POST', body: params })
+    .then(() => {
+      alert('Reply saved!');
+    })
+    .catch(err => { alert('Error: ' + err); });
+}
+
+// Filter messages
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase();
+  const filtered = allMessages.filter(m => 
+    (m.alias || '').toLowerCase().includes(query) ||
+    (m.message || '').toLowerCase().includes(query)
+  );
+  displayMessages(filtered);
+});
+
+fetchMessages();
+</script>
+</body>
+</html>
