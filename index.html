@@ -306,9 +306,9 @@
     </div>
 
     <div class="controls">
-      <button class="btn active" onclick="filterMessages('all')">All Messages</button>
-      <button class="btn" onclick="filterMessages('pending')">Pending</button>
-      <button class="btn" onclick="filterMessages('replied')">Replied</button>
+      <button class="btn active" onclick="applyFilter('all')">All Messages</button>
+      <button class="btn" onclick="applyFilter('pending')">Pending</button>
+      <button class="btn" onclick="applyFilter('replied')">Replied</button>
       <button class="btn" onclick="refreshMessages()">🔄 Refresh</button>
     </div>
 
@@ -343,7 +343,7 @@
         }
 
         updateStatus(`Loaded ${allMessages.length} messages`, 'success');
-        renderMessages(filterMessages(allMessages, currentFilter));
+        renderFilteredMessages();
         clearError();
       } catch (err) {
         console.error('Error:', err);
@@ -412,13 +412,18 @@
       return result;
     }
 
-    function filterMessages(messages, filter) {
+    function filterMessagesByStatus(messages, filter) {
       if (filter === 'pending') {
         return messages.filter(m => !m.reply || m.reply.trim() === '');
       } else if (filter === 'replied') {
         return messages.filter(m => m.reply && m.reply.trim() !== '');
       }
       return messages;
+    }
+
+    function renderFilteredMessages() {
+      const filtered = filterMessagesByStatus(allMessages, currentFilter);
+      renderMessages(filtered);
     }
 
     function renderMessages(messages) {
@@ -517,11 +522,11 @@
       }
     }
 
-    function filterMessages(filter) {
+    function applyFilter(filter) {
       currentFilter = filter;
       document.querySelectorAll('.controls .btn').forEach(b => b.classList.remove('active'));
       event.target.classList.add('active');
-      renderMessages(filterMessages(allMessages, filter));
+      renderFilteredMessages();
     }
 
     function refreshMessages() {
