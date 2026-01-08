@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Review Dashboard</title>
+  <title>Admin Dashboard</title>
   <style>
     * {
       margin: 0;
@@ -12,30 +12,38 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background-color: #faf9f7;
-      color: #262420;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
       padding: 20px;
     }
 
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
     .header {
-      text-align: center;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
       margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      text-align: center;
     }
 
     h1 {
-      font-family: 'Playfair Display', serif;
-      color: #0d5f5f;
-      font-size: 2rem;
+      color: #333;
       margin-bottom: 10px;
+      font-size: 2rem;
     }
 
     .status-bar {
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 30px;
       margin-top: 15px;
-      font-size: 0.875rem;
+      font-size: 0.95rem;
     }
 
     .status-item {
@@ -45,8 +53,8 @@
     }
 
     .status-indicator {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background-color: #10b981;
     }
@@ -61,11 +69,6 @@
       50% { opacity: 0.5; }
     }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
     .controls {
       display: flex;
       gap: 10px;
@@ -74,169 +77,168 @@
       flex-wrap: wrap;
     }
 
-    .btn-control {
-      padding: 10px 16px;
-      border: 1px solid #e8e6e2;
-      background-color: #fff;
+    .btn {
+      padding: 10px 20px;
+      border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 0.875rem;
+      font-weight: 600;
       transition: all 0.2s ease;
+      background: white;
+      color: #333;
+      border: 2px solid #ddd;
     }
 
-    .btn-control:hover {
-      background-color: #f5f3f0;
-      border-color: #0d5f5f;
+    .btn:hover {
+      border-color: #667eea;
+      color: #667eea;
     }
 
-    .btn-control.active {
-      background-color: #0d5f5f;
-      color: #fff;
-      border-color: #0d5f5f;
+    .btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
     }
 
     .message-card {
-      background-color: #fff;
-      border: 1px solid #e8e6e2;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      transition: box-shadow 0.2s ease;
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
     }
 
     .message-card:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     }
 
     .message-card.has-reply {
-      border-left: 4px solid #10b981;
+      border-left: 5px solid #10b981;
     }
 
     .message-header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
-      gap: 10px;
+      align-items: center;
+      margin-bottom: 15px;
       flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .name-tag {
-      font-weight: 600;
-      color: #fff;
-      background: #0d5f5f;
-      padding: 6px 14px;
+    .alias-tag {
+      background: #667eea;
+      color: white;
+      padding: 8px 16px;
       border-radius: 20px;
-      font-size: 0.875rem;
-      white-space: nowrap;
+      font-weight: 600;
+      font-size: 0.9rem;
     }
 
     .message-id {
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       color: #999;
-      font-family: 'Courier New', monospace;
+      font-family: monospace;
+      background: #f5f5f5;
       padding: 4px 8px;
-      background-color: #f5f3f0;
       border-radius: 4px;
     }
 
     .timestamp {
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       color: #999;
-      white-space: nowrap;
     }
 
     .message-body {
-      font-size: 0.95rem;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #667eea;
       line-height: 1.6;
-      margin-bottom: 16px;
-      padding: 12px;
-      background-color: #faf9f7;
-      border-radius: 6px;
-      border-left: 3px solid #0d5f5f;
+      color: #333;
     }
 
     .reply-section {
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #e8e6e2;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid #eee;
     }
 
     .reply-label {
-      font-size: 0.875rem;
       font-weight: 600;
-      color: #0d5f5f;
-      margin-bottom: 8px;
+      color: #333;
+      margin-bottom: 10px;
       display: block;
     }
 
     .reply-display {
-      background-color: #f0fdf4;
-      border: 1px solid #86efac;
-      border-radius: 6px;
+      background: #f0fdf4;
+      border: 2px solid #86efac;
+      border-radius: 8px;
       padding: 12px;
       margin-bottom: 12px;
-      font-size: 0.875rem;
+      font-size: 0.95rem;
       line-height: 1.5;
+      color: #166534;
     }
 
     .reply-display.empty {
+      background: #f5f5f5;
+      border-color: #ddd;
       color: #999;
       font-style: italic;
-      background-color: #faf9f7;
-      border-color: #e8e6e2;
     }
 
     .reply-input-group {
       display: flex;
-      gap: 8px;
+      gap: 10px;
+      align-items: flex-end;
     }
 
     .reply-input {
       flex: 1;
-      padding: 10px 12px;
-      border: 1px solid #e8e6e2;
-      border-radius: 6px;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
       font-family: inherit;
-      font-size: 0.875rem;
+      font-size: 0.95rem;
       resize: vertical;
-      min-height: 60px;
-      transition: border-color 0.2s ease;
+      min-height: 80px;
+      transition: all 0.2s ease;
     }
 
     .reply-input:focus {
       outline: none;
-      border-color: #0d5f5f;
-      box-shadow: 0 0 0 3px rgba(13, 95, 95, 0.1);
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 
-    .reply-btn {
-      background-color: #0d5f5f;
-      color: #fff;
+    .reply-input:disabled {
+      background: #f5f5f5;
+      cursor: not-allowed;
+    }
+
+    .btn-save {
+      background: #10b981;
+      color: white;
+      padding: 12px 24px;
       border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 0.875rem;
-      transition: all 0.2s ease;
       white-space: nowrap;
-      align-self: flex-end;
+      transition: all 0.2s ease;
     }
 
-    .reply-btn:hover {
-      background-color: #094545;
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(13, 95, 95, 0.2);
+    .btn-save:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
 
-    .reply-btn:active {
-      transform: translateY(0);
-    }
-
-    .reply-btn:disabled {
-      background-color: #ccc;
+    .btn-save:disabled {
+      background: #ccc;
       cursor: not-allowed;
       transform: none;
     }
@@ -244,17 +246,14 @@
     .empty-state {
       text-align: center;
       padding: 60px 20px;
+      background: white;
+      border-radius: 12px;
       color: #999;
     }
 
-    .empty-state-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-    }
-
     .error-message {
-      background-color: #fef2f2;
-      border: 1px solid #fecaca;
+      background: #fef2f2;
+      border: 2px solid #fecaca;
       color: #991b1b;
       padding: 16px;
       border-radius: 8px;
@@ -262,90 +261,94 @@
     }
 
     .success-message {
-      background-color: #f0fdf4;
-      border: 1px solid #86efac;
+      background: #f0fdf4;
+      border: 2px solid #86efac;
       color: #166534;
       padding: 12px 16px;
-      border-radius: 6px;
+      border-radius: 8px;
       margin-bottom: 12px;
-      font-size: 0.875rem;
+      display: none;
     }
 
-    .filter-badge {
-      display: inline-block;
-      background-color: #0d5f5f;
-      color: #fff;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      margin-left: 8px;
+    .success-message.show {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>📋 Admin Review Dashboard</h1>
-    <div class="status-bar">
-      <div class="status-item">
-        <div class="status-indicator loading" id="statusIndicator"></div>
-        <span id="statusText">Loading messages...</span>
-      </div>
-      <div class="status-item">
-        <span>Total: <strong id="totalCount">0</strong></span>
-      </div>
-      <div class="status-item">
-        <span>Replied: <strong id="repliedCount">0</strong></span>
-      </div>
-    </div>
-  </div>
-
   <div class="container">
-    <div class="controls">
-      <button class="btn-control active" onclick="filterMessages('all')">All Messages</button>
-      <button class="btn-control" onclick="filterMessages('pending')">Pending Replies</button>
-      <button class="btn-control" onclick="filterMessages('replied')">Already Replied</button>
-      <button class="btn-control" onclick="refreshMessages()">🔄 Refresh Now</button>
-    </div>
-
-    <div id="errorContainer"></div>
-    <div id="messagesContainer">
-      <div class="empty-state">
-        <div class="empty-state-icon">📭</div>
-        <p>Loading messages...</p>
+    <div class="header">
+      <h1>📋 Admin Dashboard</h1>
+      <div class="status-bar">
+        <div class="status-item">
+          <div class="status-indicator loading" id="statusIndicator"></div>
+          <span id="statusText">Loading...</span>
+        </div>
+        <div class="status-item">
+          Total: <strong id="totalCount">0</strong>
+        </div>
+        <div class="status-item">
+          Replied: <strong id="repliedCount">0</strong>
+        </div>
       </div>
     </div>
+
+    <div class="controls">
+      <button class="btn active" onclick="filterMessages('all')">All Messages</button>
+      <button class="btn" onclick="filterMessages('pending')">Pending</button>
+      <button class="btn" onclick="filterMessages('replied')">Replied</button>
+      <button class="btn" onclick="refreshMessages()">🔄 Refresh</button>
+    </div>
+
+    <div id="successMessage" class="success-message">✓ Reply saved successfully!</div>
+    <div id="errorContainer"></div>
+    <div id="messagesContainer"></div>
   </div>
 
   <script>
-    // ✅ YOUR SHEET ID IS ALREADY SET HERE
-    const SHEET_ID = "11lsl0stHVQKIZcOLgTMYtvlvFqPgsuRfSBFS0KNVUWk";
-    
-    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+    // Configuration
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyvD5r3LE94iIFVUI8A9l_IaH-oLL7DXxirpKlQ1Ba4jIb0Lz6rdV649Cevzl4wd2UR/exec";
+    const SHEET_ID = "11lsl0stHVQKIZcOLgTMYtvlvFqPgsuRfSBFS0KNVUWk";
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
 
     let allMessages = [];
     let currentFilter = 'all';
 
     async function fetchMessages() {
       try {
-        updateStatus('Loading messages...', 'loading');
+        updateStatus('Loading...', 'loading');
         const response = await fetch(CSV_URL);
-        if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
         const csvText = await response.text();
         allMessages = parseCSV(csvText);
+        
         if (allMessages.length === 0) {
-          showError('No messages found. Make sure the Google Sheet is publicly shared.');
-          updateStatus('No messages', 'idle');
+          showError('No messages found. Make sure the sheet is publicly shared.');
           renderMessages([]);
+          updateStatus('No messages', 'idle');
           return;
         }
-        updateStatus(`Loaded ${allMessages.length} message(s)`, 'success');
-        renderMessages(filterMessagesByStatus(allMessages, currentFilter));
+
+        updateStatus(`Loaded ${allMessages.length} messages`, 'success');
+        renderMessages(filterMessages(allMessages, currentFilter));
         clearError();
       } catch (err) {
-        console.error('Fetch error:', err);
-        showError(`Failed to load messages: ${err.message}`);
-        updateStatus('Error loading messages', 'error');
+        console.error('Error:', err);
+        showError(`Failed to load: ${err.message}`);
+        updateStatus('Error', 'error');
         renderMessages([]);
       }
     }
@@ -353,6 +356,7 @@
     function parseCSV(csvText) {
       const lines = csvText.trim().split('\n');
       if (lines.length < 2) return [];
+      
       const headers = parseCSVLine(lines[0]);
       const headerMap = {
         timestamp: headers.indexOf('Timestamp'),
@@ -361,14 +365,12 @@
         message: headers.indexOf('Message'),
         reply: headers.indexOf('Reply')
       };
-      if (Object.values(headerMap).some(idx => idx === -1)) {
-        console.warn('CSV headers not found. Expected: Timestamp, Message id, Alias, Message, Reply');
-        return [];
-      }
+
       const messages = [];
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;
+        
         const values = parseCSVLine(line);
         const msg = {
           timestamp: values[headerMap.timestamp] || '',
@@ -377,6 +379,7 @@
           message: values[headerMap.message] || '',
           reply: values[headerMap.reply] || ''
         };
+        
         if (msg.messageId) messages.push(msg);
       }
       return messages;
@@ -386,9 +389,11 @@
       const result = [];
       let current = '';
       let insideQuotes = false;
+      
       for (let i = 0; i < line.length; i++) {
         const char = line[i];
         const nextChar = line[i + 1];
+        
         if (char === '"') {
           if (insideQuotes && nextChar === '"') {
             current += '"';
@@ -407,11 +412,11 @@
       return result;
     }
 
-    function filterMessagesByStatus(messages, filter) {
+    function filterMessages(messages, filter) {
       if (filter === 'pending') {
-        return messages.filter(msg => !msg.reply || msg.reply.trim() === '');
+        return messages.filter(m => !m.reply || m.reply.trim() === '');
       } else if (filter === 'replied') {
-        return messages.filter(msg => msg.reply && msg.reply.trim() !== '');
+        return messages.filter(m => m.reply && m.reply.trim() !== '');
       }
       return messages;
     }
@@ -419,28 +424,33 @@
     function renderMessages(messages) {
       const container = document.getElementById('messagesContainer');
       const totalMessages = allMessages.length;
-      const repliedMessages = allMessages.filter(msg => msg.reply && msg.reply.trim() !== '').length;
+      const repliedMessages = allMessages.filter(m => m.reply && m.reply.trim() !== '').length;
+      
       document.getElementById('totalCount').textContent = totalMessages;
       document.getElementById('repliedCount').textContent = repliedMessages;
+
       if (messages.length === 0) {
-        container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📭</div><p>${currentFilter === 'all' ? 'No messages yet.' : 'No messages match this filter.'}</p></div>`;
+        container.innerHTML = '<div class="empty-state"><p>📭 No messages</p></div>';
         return;
       }
+
       container.innerHTML = messages.map(msg => `
         <div class="message-card ${msg.reply && msg.reply.trim() ? 'has-reply' : ''}">
           <div class="message-header">
-            <span class="name-tag">${escapeHtml(msg.alias)}</span>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <span class="message-id" title="Message ID">ID: ${escapeHtml(msg.messageId)}</span>
-              <span class="timestamp">${formatTimestamp(msg.timestamp)}</span>
+            <span class="alias-tag">${escapeHtml(msg.alias)}</span>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <span class="message-id">ID: ${escapeHtml(msg.messageId)}</span>
+              <span class="timestamp">${formatTime(msg.timestamp)}</span>
             </div>
           </div>
+
           <div class="message-body">${escapeHtml(msg.message)}</div>
+
           <div class="reply-section">
             <label class="reply-label">Admin Reply</label>
             ${msg.reply && msg.reply.trim() ? `
               <div class="reply-display">
-                <strong>✓ Already replied:</strong><br>
+                <strong>✓ Already replied:</strong><br><br>
                 ${escapeHtml(msg.reply)}
               </div>
             ` : `
@@ -448,50 +458,70 @@
                 No reply yet
               </div>
             `}
+            
             <div class="reply-input-group">
-              <textarea class="reply-input" id="reply_${escapeHtml(msg.messageId)}" placeholder="Write your reply here..." ${msg.reply && msg.reply.trim() ? 'disabled' : ''}>${msg.reply && msg.reply.trim() ? msg.reply : ''}</textarea>
-              <button class="reply-btn" onclick="sendReply('${escapeHtml(msg.messageId)}')" ${msg.reply && msg.reply.trim() ? 'disabled' : ''}>Send</button>
+              <textarea 
+                class="reply-input" 
+                id="reply_${escapeHtml(msg.messageId)}" 
+                placeholder="Write your reply here..."
+                ${msg.reply && msg.reply.trim() ? 'disabled' : ''}
+              >${msg.reply && msg.reply.trim() ? msg.reply : ''}</textarea>
+              <button 
+                class="btn-save" 
+                onclick="saveReply('${escapeHtml(msg.messageId)}')"
+                ${msg.reply && msg.reply.trim() ? 'disabled' : ''}
+              >Save</button>
             </div>
           </div>
         </div>
       `).join('');
     }
 
-    async function sendReply(messageId) {
-      const input = document.getElementById(`reply_${messageId}`);
-      const replyText = input.value.trim();
-      if (!replyText) {
+    async function saveReply(messageId) {
+      const textarea = document.getElementById(`reply_${messageId}`);
+      const reply = textarea.value.trim();
+
+      if (!reply) {
         alert('Reply cannot be empty');
         return;
       }
+
       const btn = event.target;
       btn.disabled = true;
-      btn.textContent = 'Sending...';
+      btn.textContent = 'Saving...';
+
       try {
         const response = await fetch(WEB_APP_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({ messageId: messageId, reply: replyText })
+          body: new URLSearchParams({
+            action: 'updateReply',
+            messageId: messageId,
+            reply: reply
+          })
         });
-        const result = await response.text();
-        if (result.includes('Reply saved') || result.includes('success')) {
-          setTimeout(() => fetchMessages(), 500);
+
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+          showSuccess('Reply saved!');
+          setTimeout(() => fetchMessages(), 1000);
         } else {
-          throw new Error(result || 'Unknown error');
+          throw new Error(result.message || 'Unknown error');
         }
       } catch (err) {
-        console.error('Send error:', err);
-        alert(`Failed to send reply: ${err.message}`);
+        console.error('Error:', err);
+        alert(`Failed: ${err.message}`);
         btn.disabled = false;
-        btn.textContent = 'Send';
+        btn.textContent = 'Save';
       }
     }
 
     function filterMessages(filter) {
       currentFilter = filter;
-      document.querySelectorAll('.btn-control').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.controls .btn').forEach(b => b.classList.remove('active'));
       event.target.classList.add('active');
-      renderMessages(filterMessagesByStatus(allMessages, filter));
+      renderMessages(filterMessages(allMessages, filter));
     }
 
     function refreshMessages() {
@@ -502,6 +532,7 @@
       const indicator = document.getElementById('statusIndicator');
       const statusText = document.getElementById('statusText');
       statusText.textContent = text;
+      
       indicator.classList.remove('loading');
       if (state === 'loading') {
         indicator.classList.add('loading');
@@ -516,15 +547,21 @@
       document.getElementById('errorContainer').innerHTML = `<div class="error-message">⚠️ ${escapeHtml(message)}</div>`;
     }
 
+    function showSuccess(message) {
+      const msg = document.getElementById('successMessage');
+      msg.textContent = '✓ ' + message;
+      msg.classList.add('show');
+      setTimeout(() => msg.classList.remove('show'), 3000);
+    }
+
     function clearError() {
       document.getElementById('errorContainer').innerHTML = '';
     }
 
-    function formatTimestamp(timestamp) {
+    function formatTime(timestamp) {
       if (!timestamp) return 'Unknown';
       try {
-        const date = new Date(timestamp);
-        return date.toLocaleString();
+        return new Date(timestamp).toLocaleString();
       } catch {
         return timestamp;
       }
